@@ -52,8 +52,8 @@ public class Main {
      * Инициализация объектов игры
      */
     static void initialize(int fieldSizeX, int fieldSizeY){
-//        fieldSizeX = 3;
-//        fieldSizeY = 6;
+        Main.fieldSizeX = fieldSizeX;
+        Main.fieldSizeY = fieldSizeY;
         countTurns = 0;
         field = new char[fieldSizeX][fieldSizeY];
         for(int y = 0; y < fieldSizeY; y++){
@@ -228,9 +228,11 @@ public class Main {
         if (countMax >= WIN_COUNT) return true;
 
 
+
+
 //        Проверка победы по низходящей диагонали
         countMax = 0;
-        for (int k = -fieldSizeX - 1; k < fieldSizeY + fieldSizeX - 4; k++) {
+        for (int k = -fieldSizeY - 1; k < fieldSizeY + fieldSizeX; k++) {
             count = 0;
             for (int i = fieldSizeX; i >= 0; i--) {
                 int j = i - k;
