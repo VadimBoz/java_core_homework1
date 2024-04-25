@@ -12,10 +12,20 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final Random random = new Random();
-    private static final int WIN_COUNT = 3;
+    private static int WIN_COUNT;
     private static final char DOT_HUMAN = 'X';
     private static final char DOT_AI = '0';
     private static final char DOT_EMPTY = '*';
+    private static  int x_HUMAN;
+    private static  int y_HUMAN;
+    private static int i_start;   // начальные и конечные координаты группы точек для блокоровки AI
+    private static int i_end;
+    private static int j_start;
+    private static int j_end;
+
+
+
+
     private static int fieldSizeX;
     private static int fieldSizeY;
     private static char[][] field;
@@ -29,7 +39,7 @@ public class Main {
 
     public static void main(String[] args) {
         while (true){
-            initialize(3,6);
+            initialize(6,9, 4);
             printField();
             while (true){
                 humanTurn();
@@ -51,9 +61,10 @@ public class Main {
     /**
      * Инициализация объектов игры
      */
-    static void initialize(int fieldSizeX, int fieldSizeY){
+    static void initialize(int fieldSizeX, int fieldSizeY, int WIN_COUNT){
         Main.fieldSizeX = fieldSizeX;
         Main.fieldSizeY = fieldSizeY;
+        Main.WIN_COUNT = WIN_COUNT;
         countTurns = 0;
         field = new char[fieldSizeX][fieldSizeY];
         for(int y = 0; y < fieldSizeY; y++){
@@ -108,6 +119,8 @@ public class Main {
             System.out.printf("Введите координаты хода X (от 1 до %s) и Y(от 1 до %s) через пробел: \n", fieldSizeX, fieldSizeY);
             x = scanner.nextInt() - 1;
             y = scanner.nextInt() - 1;
+            x_HUMAN = x;
+            y_HUMAN = y;
             if (isCellValid(x, y) && isCellEmpty(x, y)) {
                 field[x][y] = DOT_HUMAN;
                 countTurns++;
@@ -144,11 +157,33 @@ public class Main {
     /**
      * Ход игрока (компьютера)
      */
-    static void aiTurn(){
+    static void aiTurn() {
         int x;
         int y;
+        int curX;
+        int curY;
+
+        int jAi = checkContinuousVertical(DOT_HUMAN, WIN_COUNT - 1);
+        if (jAi != -1) {
+                field[x_HUMAN][jAi] = DOT_AI;
+                countTurns++;
+                return;
+        }
+
+        int iAi = checkContinuousHorizontal(DOT_HUMAN, WIN_COUNT - 1);
+        if (iAi != -1) {
+            field[iAi][y_HUMAN] = DOT_AI;
+            countTurns++;
+            return;
+        }
 
 
+        int[] dAi = checkContinuousDiagonal(DOT_HUMAN, WIN_COUNT - 1);
+            if (dAi[0] != -1) {
+                field[dAi[0]][dAi[1]] = DOT_AI;
+                countTurns++;
+                return;
+            }
 
 
 
@@ -175,28 +210,33 @@ public class Main {
      * @param dot фишка игрока
      * @return
      */
-    static boolean checkWin(char dot){
+    static boolean checkWin(char dot, int winCount){
 
         // Проверка победы по вертикалям
-        int count = 0;
+        int count;
         int countMax = 0;
         for (int i = 0; i < fieldSizeX; i++) {
-            countMax = 0;
             count = 0;
             for (int j = 0; j < fieldSizeY; j++) {
                 if (field[i][j] == dot) {
                     count++;
-                    if (count > countMax) countMax = count;
+                    if (count > countMax) {
+                        countMax = count;
+                        i_end = i;
+                        j_end = j;
+                    }
                 } else {
                     count = 0;
+
+
                 }
             }
         }
         if (countMax >= WIN_COUNT) return true;
 
         // Проверка победы по горизонтали
+        countMax = 0;
         for (int j = 0; j < fieldSizeY; j++) {
-            countMax = 0;
             count = 0;
             for (int i = 0; i < fieldSizeX; i++) {
                 if (field[i][j] == dot) {
@@ -208,6 +248,7 @@ public class Main {
             }
         }
         if (countMax >= WIN_COUNT) return true;
+
 
 //          Проверка победы по восходящей диагонали
         countMax = 0;
@@ -226,8 +267,6 @@ public class Main {
             }
         }
         if (countMax >= WIN_COUNT) return true;
-
-
 
 
 //        Проверка победы по низходящей диагонали
@@ -249,14 +288,180 @@ public class Main {
 //            System.out.println();
         }
         if (countMax >= WIN_COUNT) return true;
-
         return false;
     }
 
 
-    static boolean check1(int x, int y, char dot, int win){
-        return false;
+    static int checkContinuousVertical(char dot, int winCount) {
+        int count = 0;
+        int jEnd = y_HUMAN;
+            for (int j = y_HUMAN; j < fieldSizeY; j++) {
+                if (field[x_HUMAN][j] == dot) {
+                    count++;
+                    jEnd = j;
+                } else {
+                    break;
+                }
+            }
+            if (count >= winCount) {
+                if (jEnd + 1 < fieldSizeY && field[x_HUMAN][jEnd + 1] == '*') {
+                    return jEnd + 1;
+                }
+                if ((y_HUMAN - 1 >= 0  && field[x_HUMAN][y_HUMAN - 1] == '*')) {
+                    return y_HUMAN - 1;
+                }
+
+
+            }
+
+            count = 0;
+            for (int j = y_HUMAN; j >= 0; j--) {
+                if (field[x_HUMAN][j] == dot) {
+                    count++;
+                    jEnd = j;
+                } else {
+                    break;
+                }
+            }
+            if (count >= winCount) {
+                if ((jEnd - 1 >= 0 && field[x_HUMAN][jEnd - 1] == '*')) {
+                    return jEnd - 1;
+                }
+                if ((y_HUMAN + 1 < fieldSizeY  && field[x_HUMAN][y_HUMAN + 1] == '*')) {
+                    return y_HUMAN + 1;
+                }
+            }
+            return -1;
     }
+
+    static int checkContinuousHorizontal(char dot, int winCount) {
+        int count = 0;
+        int iEnd = x_HUMAN;
+        for (int i = x_HUMAN; i < fieldSizeX; i++) {
+            if (field[i][y_HUMAN] == dot) {
+                count++;
+                iEnd = i;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if (iEnd + 1 < fieldSizeX && field[iEnd + 1][y_HUMAN] == '*') {
+                return iEnd + 1;
+            }
+            if (x_HUMAN - 1 >= 0 && field[x_HUMAN - 1][y_HUMAN] == '*') {
+                return x_HUMAN - 1;
+            }
+
+
+        }
+
+        count = 0;
+        for (int i = x_HUMAN; i >= 0; i--) {
+            if (field[i][y_HUMAN] == dot) {
+                count++;
+                iEnd = i;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if ((iEnd - 1 >= 0 && field[iEnd - 1][y_HUMAN] == '*')) {
+                return iEnd - 1;
+            }
+            if ((x_HUMAN + 1 < fieldSizeX  && field[x_HUMAN + 1][y_HUMAN] == '*')) {
+                return x_HUMAN + 1;
+            }
+        }
+        return -1;
+    }
+
+    static int[] checkContinuousDiagonal(char dot, int winCount) {
+        int count = 0;
+        int iEnd = x_HUMAN;
+        int jEnd = y_HUMAN;
+        for (int i = x_HUMAN, j = y_HUMAN; i < fieldSizeX && j >= 0; i++, j--) {  //вправо вверх
+            if (field[i][j] == dot) {
+                count++;
+                iEnd = i;
+                jEnd = j;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if ((iEnd + 1 < fieldSizeX) && (jEnd - 1 >= 0) && field[iEnd + 1][jEnd - 1] == '*') {
+                return new int[] {iEnd + 1, jEnd - 1};
+            }
+            if ((x_HUMAN - 1 >= 0  && y_HUMAN + 1 < fieldSizeY) && field[x_HUMAN - 1][y_HUMAN + 1] == '*') {
+                return new int[]{x_HUMAN - 1, y_HUMAN + 1};
+            }
+
+        }
+
+        count = 0;
+        for (int i = x_HUMAN, j = y_HUMAN; i >= 0 && j >=0; i--, j--) {    // влево вверх
+            if (field[i][j] == dot) {
+                count++;
+                iEnd = i;
+                jEnd = j;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if ((iEnd - 1 >= 0) && (jEnd - 1 >=  0) && field[iEnd - 1][jEnd - 1] == '*') {
+                return new int[] {iEnd - 1, jEnd - 1};
+            }
+            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN + 1 < fieldSizeY) && field[x_HUMAN + 1][y_HUMAN + 1] == '*') {
+                return new int[]{x_HUMAN + 1, y_HUMAN + 1};
+            }
+        }
+
+
+        count = 0;
+        for (int i = x_HUMAN, j = y_HUMAN; i >=0 && j < fieldSizeY; i--, j++) {    // влево вниз
+            if (field[i][j] == dot) {
+                count++;
+                iEnd = i;
+                jEnd = j;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if ((iEnd - 1 >= 0) && (jEnd + 1 < fieldSizeY) && field[iEnd - 1][jEnd + 1] == '*') {
+                return new int[] {iEnd - 1, jEnd + 1};
+            }
+            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN - 1 >= 0)  && field[x_HUMAN + 1][y_HUMAN - 1] == '*') {
+                return new int[]{x_HUMAN + 1, y_HUMAN - 1};
+            }
+        }
+
+        count = 0;
+        for (int i = x_HUMAN, j = y_HUMAN; i < fieldSizeX && j < fieldSizeY; i++, j++) {  //вправо вниз
+            if (field[i][j] == dot) {
+                count++;
+                iEnd = i;
+                jEnd = j;
+            } else {
+                break;
+            }
+        }
+        if (count >= winCount) {
+            if ((iEnd + 1 < fieldSizeX) && (jEnd + 1 <  fieldSizeY) && field[iEnd + 1][jEnd + 1] == '*') {
+                return new int[] {iEnd + 1, jEnd + 1};
+            }
+            if ((x_HUMAN - 1 >= 0) && (y_HUMAN - 1 >=  0) && field[x_HUMAN - 1][y_HUMAN - 1] == '*') {
+                return new int[] {x_HUMAN - 1, y_HUMAN - 1};
+            }
+        }
+        return new int[]{-1, -1};
+    }
+
+
+
+
 
     static boolean check2(int x, int y, char dot, int win){
         return false;
@@ -277,7 +482,7 @@ public class Main {
      * @return
      */
     static boolean checkState(char dot, String s){
-        if (checkWin(dot)){
+        if (checkWin(dot, WIN_COUNT)){
             System.out.println(s);
             return true;
         }
