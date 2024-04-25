@@ -150,8 +150,6 @@ public class Main {
     static void aiTurn() {
         int x;
         int y;
-        int curX;
-        int curY;
 
         int jAi = checkContinuousVertical(DOT_HUMAN, WIN_COUNT - 1);
         if (jAi != -1) {
@@ -174,8 +172,6 @@ public class Main {
                 countTurns++;
                 return;
             }
-
-
 
         do{
             x = random.nextInt(fieldSizeX);
@@ -215,8 +211,6 @@ public class Main {
                     }
                 } else {
                     count = 0;
-
-
                 }
             }
         }
@@ -291,14 +285,12 @@ public class Main {
                 }
             }
             if (count >= winCount) {
-                if (jEnd + 1 < fieldSizeY && field[x_HUMAN][jEnd + 1] == '*') {
+                if (jEnd + 1 < fieldSizeY && isCellEmpty(x_HUMAN, jEnd + 1)) {
                     return jEnd + 1;
                 }
-                if ((y_HUMAN - 1 >= 0  && field[x_HUMAN][y_HUMAN - 1] == '*')) {
+                if (y_HUMAN - 1 >= 0  && isCellEmpty(x_HUMAN, y_HUMAN - 1)) {
                     return y_HUMAN - 1;
                 }
-
-
             }
 
             count = 0;
@@ -311,10 +303,10 @@ public class Main {
                 }
             }
             if (count >= winCount) {
-                if ((jEnd - 1 >= 0 && field[x_HUMAN][jEnd - 1] == '*')) {
+                if (jEnd - 1 >= 0 && isCellEmpty(x_HUMAN, jEnd - 1)) {
                     return jEnd - 1;
                 }
-                if ((y_HUMAN + 1 < fieldSizeY  && field[x_HUMAN][y_HUMAN + 1] == '*')) {
+                if (y_HUMAN + 1 < fieldSizeY  && isCellEmpty(x_HUMAN, y_HUMAN + 1)) {
                     return y_HUMAN + 1;
                 }
             }
@@ -333,10 +325,10 @@ public class Main {
             }
         }
         if (count >= winCount) {
-            if (iEnd + 1 < fieldSizeX && field[iEnd + 1][y_HUMAN] == '*') {
+            if (iEnd + 1 < fieldSizeX && isCellEmpty(iEnd + 1, y_HUMAN)) {
                 return iEnd + 1;
             }
-            if (x_HUMAN - 1 >= 0 && field[x_HUMAN - 1][y_HUMAN] == '*') {
+            if (x_HUMAN - 1 >= 0 && isCellEmpty(x_HUMAN - 1, y_HUMAN)) {
                 return x_HUMAN - 1;
             }
         }
@@ -354,7 +346,7 @@ public class Main {
             if ((iEnd - 1 >= 0 && field[iEnd - 1][y_HUMAN] == '*')) {
                 return iEnd - 1;
             }
-            if ((x_HUMAN + 1 < fieldSizeX  && field[x_HUMAN + 1][y_HUMAN] == '*')) {
+            if (x_HUMAN + 1 < fieldSizeX  && isCellEmpty(x_HUMAN + 1, y_HUMAN)) {
                 return x_HUMAN + 1;
             }
         }
@@ -378,10 +370,9 @@ public class Main {
             if ((iEnd + 1 < fieldSizeX) && (jEnd - 1 >= 0) && field[iEnd + 1][jEnd - 1] == '*') {
                 return new int[] {iEnd + 1, jEnd - 1};
             }
-            if ((x_HUMAN - 1 >= 0  && y_HUMAN + 1 < fieldSizeY) && field[x_HUMAN - 1][y_HUMAN + 1] == '*') {
+            if ((x_HUMAN - 1 >= 0  && y_HUMAN + 1 < fieldSizeY) && isCellEmpty(x_HUMAN - 1, y_HUMAN + 1)) {
                 return new int[]{x_HUMAN - 1, y_HUMAN + 1};
             }
-
         }
 
         count = 0;
@@ -398,7 +389,7 @@ public class Main {
             if ((iEnd - 1 >= 0) && (jEnd - 1 >=  0) && field[iEnd - 1][jEnd - 1] == '*') {
                 return new int[] {iEnd - 1, jEnd - 1};
             }
-            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN + 1 < fieldSizeY) && field[x_HUMAN + 1][y_HUMAN + 1] == '*') {
+            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN + 1 < fieldSizeY) && isCellEmpty(x_HUMAN + 1, y_HUMAN + 1)) {
                 return new int[]{x_HUMAN + 1, y_HUMAN + 1};
             }
         }
@@ -418,7 +409,7 @@ public class Main {
             if ((iEnd - 1 >= 0) && (jEnd + 1 < fieldSizeY) && field[iEnd - 1][jEnd + 1] == '*') {
                 return new int[] {iEnd - 1, jEnd + 1};
             }
-            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN - 1 >= 0)  && field[x_HUMAN + 1][y_HUMAN - 1] == '*') {
+            if ((x_HUMAN + 1 < fieldSizeX  && y_HUMAN - 1 >= 0)  && isCellEmpty(x_HUMAN + 1,y_HUMAN - 1)) {
                 return new int[]{x_HUMAN + 1, y_HUMAN - 1};
             }
         }
@@ -434,10 +425,10 @@ public class Main {
             }
         }
         if (count >= winCount) {
-            if ((iEnd + 1 < fieldSizeX) && (jEnd + 1 <  fieldSizeY) && field[iEnd + 1][jEnd + 1] == '*') {
+            if ((iEnd + 1 < fieldSizeX) && (jEnd + 1 <  fieldSizeY) && isCellEmpty(iEnd + 1, jEnd + 1)) {
                 return new int[] {iEnd + 1, jEnd + 1};
             }
-            if ((x_HUMAN - 1 >= 0) && (y_HUMAN - 1 >=  0) && field[x_HUMAN - 1][y_HUMAN - 1] == '*') {
+            if ((x_HUMAN - 1 >= 0) && (y_HUMAN - 1 >=  0) && isCellEmpty(x_HUMAN - 1, y_HUMAN - 1)) {
                 return new int[] {x_HUMAN - 1, y_HUMAN - 1};
             }
         }
