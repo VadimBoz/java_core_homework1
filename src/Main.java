@@ -1,11 +1,8 @@
 
 
-import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
 
 public class Main {
 
@@ -18,13 +15,6 @@ public class Main {
     private static final char DOT_EMPTY = '*';
     private static  int x_HUMAN;
     private static  int y_HUMAN;
-    private static int i_start;   // начальные и конечные координаты группы точек для блокоровки AI
-    private static int i_end;
-    private static int j_start;
-    private static int j_end;
-
-
-
 
     private static int fieldSizeX;
     private static int fieldSizeY;
@@ -222,8 +212,6 @@ public class Main {
                     count++;
                     if (count > countMax) {
                         countMax = count;
-                        i_end = i;
-                        j_end = j;
                     }
                 } else {
                     count = 0;
@@ -285,7 +273,6 @@ public class Main {
                     }
                 }
             }
-//            System.out.println();
         }
         if (countMax >= WIN_COUNT) return true;
         return false;
@@ -352,8 +339,6 @@ public class Main {
             if (x_HUMAN - 1 >= 0 && field[x_HUMAN - 1][y_HUMAN] == '*') {
                 return x_HUMAN - 1;
             }
-
-
         }
 
         count = 0;
@@ -458,7 +443,6 @@ public class Main {
         }
         return new int[]{-1, -1};
     }
-
 
 
 
